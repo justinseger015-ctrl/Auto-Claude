@@ -18,7 +18,8 @@ import {
   EXECUTION_PHASE_BADGE_COLORS
 } from '../../shared/constants';
 import { startTask, stopTask, checkTaskRunning, recoverStuckTask, isIncompleteHumanReview, archiveTasks } from '../stores/task-store';
-import type { Task, TaskCategory, ReviewReason } from '../../shared/types';
+import { useGlossary } from '../contexts/GlossaryContext';
+import type { Task, TaskCategory, ExecutionPhase, ReviewReason } from '../../shared/types';
 
 // Category icon mapping
 const CategoryIcon: Record<TaskCategory, typeof Zap> = {
@@ -39,6 +40,7 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, onClick }: TaskCardProps) {
+  const glossary = useGlossary();
   const [isStuck, setIsStuck] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
   const [hasCheckedRunning, setHasCheckedRunning] = useState(false);
@@ -161,6 +163,11 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       onClick={onClick}
     >
       <CardContent className="p-4">
+        {/* Task type label with glossary term */}
+        <div className="text-[10px] text-muted-foreground mb-1">
+          {glossary.task} {task.id}
+        </div>
+
         {/* Header - improved visual hierarchy */}
         <div className="flex items-start justify-between gap-3">
           <h3
@@ -303,6 +310,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
               subtasks={task.subtasks}
               isStuck={isStuck}
               isRunning={isRunning}
+              checkpointTerm={glossary.checkpoint}
             />
           </div>
         )}

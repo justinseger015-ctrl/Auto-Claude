@@ -464,3 +464,155 @@ def save_assessment(
         )
 
     return assessment_file
+
+# =============================================================================
+# Story 4.2: Enhanced Complexity Assessment for Routing Integration
+# =============================================================================
+
+
+@dataclass
+class EnhancedComplexityAssessment:
+    """Enhanced complexity assessment with scope and risk evaluation.
+    
+    Story 4.2: Complexity Assessment Integration (AC: #1)
+    
+    Attributes:
+        tier: Complexity tier (simple, standard, complex)
+        confidence: Confidence score (0.0-1.0)
+        scope_score: Scope evaluation score (0-10)
+        risk_score: Risk factor score (0-10)
+        factors: List of contributing factors
+        affected_files: List of file patterns mentioned in description
+    """
+    
+    tier: str
+    confidence: float
+    scope_score: int
+    risk_score: int
+    factors: list[str] = field(default_factory=list)
+    affected_files: list[str] = field(default_factory=list)
+
+
+def assess_task_complexity(
+    task_description: str,
+    project_path: Path | None = None
+) -> EnhancedComplexityAssessment:
+    """Comprehensive complexity assessment with scope and risk analysis.
+    
+    Story 4.2: AC #1 - Evaluates task scope, affected files, and risk factors
+    
+    Args:
+        task_description: Natural language task description
+        project_path: Optional project path for codebase analysis
+    
+    Returns:
+        EnhancedComplexityAssessment with tier and detailed factors
+    """
+    factors = []
+    scope_score = 0
+    risk_score = 0
+    affected_files = []
+    
+    description_lower = task_description.lower()
+    
+    # === SCOPE EVALUATION (Story 4.2: AC #1) ===
+    
+    # Check for file mentions
+    file_patterns = re.findall(
+        r'[\w/\-]+\.(py|ts|tsx|js|jsx|md|yaml|json|go|rs|java|cpp|c|h)',
+        task_description
+    )
+    if file_patterns:
+        affected_files = file_patterns
+        if len(file_patterns) > 5:
+            scope_score += 3
+            factors.append(f"Multiple files mentioned ({len(file_patterns)})")
+        elif len(file_patterns) > 2:
+            scope_score += 1
+            factors.append(f"Several files mentioned ({len(file_patterns)})")
+    
+    # Check for component/module mentions
+    component_indicators = ['component', 'module', 'service', 'api', 'endpoint', 'system']
+    component_count = sum(1 for ind in component_indicators if ind in description_lower)
+    if component_count >= 3:
+        scope_score += 3
+        factors.append("Multiple system components involved")
+    elif component_count >= 1:
+        scope_score += 1
+    
+    # === RISK EVALUATION (Story 4.2: AC #1) ===
+    
+    # Security risks
+    security_terms = ['auth', 'password', 'token', 'secret', 'credential', 'permission', 'security', 'oauth']
+    if any(term in description_lower for term in security_terms):
+        risk_score += 3
+        factors.append("Security-sensitive changes")
+    
+    # Data risks
+    data_terms = ['database', 'migration', 'schema', 'data model', 'storage', 'sql', 'query']
+    if any(term in description_lower for term in data_terms):
+        risk_score += 2
+        factors.append("Database/data changes")
+    
+    # External dependency risks
+    external_terms = ['api', 'integration', 'third-party', 'external', 'webhook', 'http', 'rest', 'graphql']
+    if any(term in description_lower for term in external_terms):
+        risk_score += 2
+        factors.append("External dependencies involved")
+    
+    # === COMPLEXITY INDICATORS ===
+    
+    # Simple indicators (reduce complexity)
+    simple_terms = ['fix', 'typo', 'rename', 'update text', 'change label', 'adjust']
+    if any(term in description_lower for term in simple_terms):
+        scope_score -= 2
+        factors.append("Simple change indicator")
+    
+    # Complex indicators (increase complexity)
+    complex_terms = ['architect', 'redesign', 'refactor', 'rewrite', 'overhaul', 'migrate']
+    if any(term in description_lower for term in complex_terms):
+        scope_score += 3
+        risk_score += 2
+        factors.append("Major restructuring indicated")
+    
+    # Description length as proxy for complexity
+    if len(task_description) > 1000:
+        scope_score += 2
+        factors.append("Detailed requirements suggest complexity")
+    elif len(task_description) < 100:
+        scope_score -= 1
+    
+    # === CODEBASE ANALYSIS (Story 4.2: AC #1) ===
+    if project_path and project_path.exists():
+        existing_files = []
+        for file_pattern in affected_files:
+            file_name = Path(file_pattern).name
+            matches = list(project_path.rglob(f"*{file_name}"))
+            if matches:
+                existing_files.extend([str(m) for m in matches[:3]])
+        
+        if len(existing_files) > 3:
+            scope_score += 1
+            factors.append(f"Multiple existing files affected ({len(existing_files)})")
+    
+    # === CALCULATE TIER (Story 4.2: AC #2) ===
+    total_score = scope_score + risk_score
+    
+    if total_score <= 0:
+        tier = "simple"
+        confidence = 0.85
+    elif total_score <= 5:
+        tier = "standard"
+        confidence = 0.75
+    else:
+        tier = "complex"
+        confidence = 0.80
+    
+    return EnhancedComplexityAssessment(
+        tier=tier,
+        confidence=confidence,
+        scope_score=max(0, scope_score),
+        risk_score=max(0, risk_score),
+        factors=factors,
+        affected_files=affected_files,
+    )

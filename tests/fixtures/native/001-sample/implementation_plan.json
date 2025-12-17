@@ -1,0 +1,62 @@
+{
+  "spec_id": "001",
+  "spec_name": "sample",
+  "status": "in_progress",
+  "created_at": "2025-12-16T10:00:00Z",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Setup",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "1.1",
+          "description": "Create directory structure",
+          "status": "done",
+          "files": ["src/feature/index.ts"]
+        },
+        {
+          "id": "1.2",
+          "description": "Add dependencies",
+          "status": "done",
+          "files": ["package.json"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Implementation",
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "id": "2.1",
+          "description": "Implement core logic",
+          "status": "in_progress",
+          "files": ["src/feature/core.ts"]
+        },
+        {
+          "id": "2.2",
+          "description": "Add API endpoints",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Testing",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "3.1",
+          "description": "Write unit tests",
+          "status": "pending"
+        },
+        {
+          "id": "3.2",
+          "description": "Write integration tests",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

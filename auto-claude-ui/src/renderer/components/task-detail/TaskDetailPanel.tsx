@@ -6,6 +6,7 @@ import { calculateProgress } from '../../lib/utils';
 import { startTask, stopTask, submitReview, recoverStuckTask, deleteTask } from '../../stores/task-store';
 import { TaskEditDialog } from '../TaskEditDialog';
 import { useTaskDetail } from './hooks/useTaskDetail';
+import { useGlossary } from '../../contexts/GlossaryContext';
 import { TaskHeader } from './TaskHeader';
 import { TaskProgress } from './TaskProgress';
 import { TaskMetadata } from './TaskMetadata';
@@ -24,6 +25,7 @@ interface TaskDetailPanelProps {
 export function TaskDetailPanel({ task, onClose }: TaskDetailPanelProps) {
   const state = useTaskDetail({ task });
   const _progress = calculateProgress(task.subtasks);
+  const glossary = useGlossary();
 
   // Event Handlers
   const handleStartStop = () => {
@@ -124,6 +126,8 @@ export function TaskDetailPanel({ task, onClose }: TaskDetailPanelProps) {
           isIncomplete={state.isIncomplete}
           taskProgress={state.taskProgress}
           isRunning={state.isRunning}
+          taskTerm={glossary.task}
+          checkpointTerm={glossary.checkpoint}
           onClose={onClose}
           onEdit={() => state.setIsEditDialogOpen(true)}
         />
@@ -143,7 +147,7 @@ export function TaskDetailPanel({ task, onClose }: TaskDetailPanelProps) {
               value="subtasks"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5 text-sm"
             >
-              Subtasks ({task.subtasks.length})
+              {glossary.checkpoint}s ({task.subtasks.length})
             </TabsTrigger>
             <TabsTrigger
               value="logs"
@@ -216,7 +220,7 @@ export function TaskDetailPanel({ task, onClose }: TaskDetailPanelProps) {
 
           {/* Subtasks Tab */}
           <TabsContent value="subtasks" className="flex-1 min-h-0 overflow-hidden mt-0">
-            <TaskSubtasks task={task} />
+            <TaskSubtasks task={task} checkpointTerm={glossary.checkpoint} />
           </TabsContent>
 
           {/* Logs Tab */}

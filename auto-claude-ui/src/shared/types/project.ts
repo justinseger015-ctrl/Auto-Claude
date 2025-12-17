@@ -2,6 +2,13 @@
  * Project-related types
  */
 
+/**
+ * Planning framework type for dual-framework support.
+ * - 'bmad': BMAD Method - structured methodology with Epics, Stories, and sprint planning
+ * - 'native': Auto Claude Native - lightweight spec-based approach with Phases and Subtasks
+ */
+export type PlanningFramework = 'bmad' | 'native';
+
 export interface Project {
   id: string;
   name: string;
@@ -24,6 +31,12 @@ export interface ProjectSettings {
   graphitiMcpUrl?: string;
   /** Main branch name for worktree creation (default: auto-detected or 'main') */
   mainBranch?: string;
+  /**
+   * Planning framework for this project.
+   * Determines how tasks are organized and displayed.
+   * Defaults to 'bmad' (recommended).
+   */
+  framework: PlanningFramework;
 }
 
 export interface NotificationSettings {

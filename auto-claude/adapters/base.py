@@ -7,12 +7,14 @@ planning methodologies.
 
 Story 1.1: Create Adapter Infrastructure (AC: #2)
 Updated in Story 1.2: Replaced stub types with real imports from models.unified
+Updated: Added exception imports for proper error documentation
 """
 
 from abc import ABC, abstractmethod
 from pathlib import Path
 
 from models import WorkUnit, Task, ProjectStatus
+from adapters.exceptions import ParseError, AdapterError  # noqa: F401 - exported for subclasses
 
 
 class FrameworkAdapter(ABC):
@@ -61,7 +63,7 @@ class FrameworkAdapter(ABC):
         pass
 
     @abstractmethod
-    def parse_work_units(self, project_path: Path) -> list["WorkUnit"]:
+    def parse_work_units(self, project_path: Path) -> list[WorkUnit]:
         """Parse and return all work units (epics/phases) from project.
 
         Scans project artifacts to discover and parse all high-level
@@ -74,12 +76,12 @@ class FrameworkAdapter(ABC):
             List of WorkUnit objects representing discovered work groups.
 
         Raises:
-            ParseError: If framework artifacts are malformed.
+            adapters.exceptions.ParseError: If framework artifacts are malformed.
         """
         pass
 
     @abstractmethod
-    def parse_tasks(self, work_unit_id: str) -> list["Task"]:
+    def parse_tasks(self, work_unit_id: str) -> list[Task]:
         """Parse and return all tasks (stories/subtasks) for a work unit.
 
         Retrieves all child tasks belonging to the specified work unit.
@@ -91,13 +93,13 @@ class FrameworkAdapter(ABC):
             List of Task objects belonging to the work unit.
 
         Raises:
-            ParseError: If task artifacts are malformed.
+            adapters.exceptions.ParseError: If task artifacts are malformed.
             ValueError: If work_unit_id is not found.
         """
         pass
 
     @abstractmethod
-    def get_status(self, project_path: Path) -> "ProjectStatus":
+    def get_status(self, project_path: Path) -> ProjectStatus:
         """Return current project status from framework artifacts.
 
         Aggregates status information from framework-specific files

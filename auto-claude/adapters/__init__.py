@@ -6,6 +6,7 @@ implements the FrameworkAdapter interface.
 
 Story 1.1: Create Adapter Infrastructure (AC: #1, #3)
 Updated in Story 1.2: Import models from models package
+Updated in Story 2.5: Register BMADAdapter
 
 Usage:
     ```python
@@ -21,6 +22,7 @@ Usage:
 
 from adapters.base import FrameworkAdapter
 from adapters.glossary import GlossaryTerms, BMAD_GLOSSARY, NATIVE_GLOSSARY
+from adapters.exceptions import AdapterError, ParseError, ValidationError
 from models import WorkUnit, Task, ProjectStatus
 
 __all__ = [
@@ -36,6 +38,10 @@ __all__ = [
     "GlossaryTerms",
     "BMAD_GLOSSARY",
     "NATIVE_GLOSSARY",
+    # Exceptions
+    "AdapterError",
+    "ParseError",
+    "ValidationError",
 ]
 
 # Registry of adapter classes by framework name
@@ -93,3 +99,12 @@ def get_adapter(framework_name: str) -> FrameworkAdapter:
             f"Available: {available}"
         )
     return _adapters[framework_name]()
+
+
+# =============================================================================
+# Adapter Registration
+# =============================================================================
+
+# Register BMAD adapter
+from adapters.bmad.adapter import BMADAdapter
+register_adapter("bmad", BMADAdapter)

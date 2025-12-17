@@ -1112,3 +1112,103 @@ def temp_project(temp_git_repo: Path):
     )
 
     return temp_git_repo
+
+
+# =============================================================================
+# BMAD ADAPTER FIXTURES
+# =============================================================================
+
+@pytest.fixture
+def bmad_project_fixture(tmp_path: Path) -> Path:
+    """
+    Create a mock BMAD project structure for testing.
+
+    Creates:
+    - _bmad-output/bmm-sprint-status.yaml
+    - _bmad-output/stories/1-1-sample.md
+    - _bmad-output/bmm-workflow-status.yaml
+    """
+    # Create BMAD output directory
+    bmad_dir = tmp_path / "_bmad-output"
+    bmad_dir.mkdir(parents=True)
+
+    # Create sprint status file
+    sprint_status = """generated: 2025-12-16 23:30
+project: Test Project
+project_key: test-project
+tracking_system: file-system
+story_location: _bmad-output/stories
+
+development_status:
+  # Epic 1
+  epic-1: in-progress
+  1-1-sample: done
+  1-2-second: in-progress
+  epic-1-retrospective: pending
+
+  # Epic 2
+  epic-2: pending
+  epic-2-retrospective: optional
+"""
+    (bmad_dir / "bmm-sprint-status.yaml").write_text(sprint_status)
+
+    # Create stories directory with sample story
+    stories_dir = bmad_dir / "stories"
+    stories_dir.mkdir()
+
+    story_content = """# Story 1.1: Sample Story
+
+Status: done
+
+## Story
+As a user, I want to test the BMAD adapter so that I can verify it works correctly.
+
+## Acceptance Criteria
+1. First acceptance criterion is met
+2. Second acceptance criterion is met
+
+## Tasks / Subtasks
+- [x] Task 1: First task
+- [x] Task 2: Second task
+
+## Dev Notes
+Sample dev notes for testing.
+"""
+    (stories_dir / "1-1-sample.md").write_text(story_content)
+
+    # Create second story
+    story2_content = """# Story 1.2: Second Story
+
+Status: in-progress
+
+## Story
+As a user, I want a second sample story so that I can test multiple stories.
+
+## Acceptance Criteria
+1. First criterion is done
+2. Second criterion is pending
+
+## Tasks / Subtasks
+- [x] Task 1: Complete
+- [ ] Task 2: In progress
+
+## Dev Notes
+Notes for second story.
+"""
+    (stories_dir / "1-2-second.md").write_text(story2_content)
+
+    # Create workflow status file
+    workflow_status = """workflow: dev-story
+status: active
+current_step: 2
+steps_completed: [1]
+started_at: "2025-12-16T10:00:00Z"
+context:
+  story_key: "1-2-second"
+  epic_num: 1
+next_action: "Continue implementation"
+blockers: []
+"""
+    (bmad_dir / "bmm-workflow-status.yaml").write_text(workflow_status)
+
+    return tmp_path

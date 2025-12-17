@@ -18,6 +18,8 @@ class UnifiedStatus(Enum):
 
     The unified statuses provide a consistent interface for the UI layer
     regardless of which planning framework is active.
+
+    Story 4.4: Added NEEDS_HUMAN_REVIEW for QA loop escalation
     """
 
     PENDING = "pending"
@@ -26,3 +28,4 @@ class UnifiedStatus(Enum):
     BLOCKED = "blocked"
     COMPLETED = "completed"
     FAILED = "failed"
+    NEEDS_HUMAN_REVIEW = "needs_human_review"  # Story 4.4: AC #1

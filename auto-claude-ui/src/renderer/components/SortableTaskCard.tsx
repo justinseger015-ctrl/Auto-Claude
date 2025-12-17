@@ -31,8 +31,9 @@ export function SortableTaskCard({ task, onClick }: SortableTaskCardProps) {
     <div
       ref={setNodeRef}
       style={style}
+      data-sortable-item
       className={cn(
-        'touch-none transition-all duration-200',
+        'touch-none task-card-transition',
         isDragging && 'dragging-placeholder opacity-40 scale-[0.98]',
         isOver && !isDragging && 'ring-2 ring-primary/30 ring-offset-2 ring-offset-background rounded-xl'
       )}

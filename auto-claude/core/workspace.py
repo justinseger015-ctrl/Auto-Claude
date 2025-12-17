@@ -775,8 +775,8 @@ def _resolve_git_conflicts_with_ai(
             else:
                 # File exists in both - check if it's a lock file
                 if _is_lock_file(file_path):
-                    # Lock files should be excluded from merge entirely
-                    # They must be regenerated after merge by running the package manager
+                    # Lock files: take worktree version to resolve the conflict
+                    # They should be regenerated after merge by running the package manager
                     # (e.g., npm install, pnpm install, uv sync, cargo update)
                     #
                     # Strategy: Take main branch version and let user regenerate
@@ -822,7 +822,11 @@ def _resolve_git_conflicts_with_ai(
                         ["git", "add", file_path], cwd=project_dir, capture_output=True
                     )
                     resolved_files.append(file_path)
-                    print(success(f"    ✓ {file_path} (new file)"))
+                    # Use appropriate message based on file type
+                    if file_path in lock_files_excluded:
+                        print(success(f"    ✓ {file_path} (lock file - worktree version)"))
+                    else:
+                        print(success(f"    ✓ {file_path} (new file)"))
                 else:
                     # Delete the file
                     target_path = project_dir / file_path

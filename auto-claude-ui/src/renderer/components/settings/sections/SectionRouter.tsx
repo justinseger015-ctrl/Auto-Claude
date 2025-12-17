@@ -1,6 +1,7 @@
 import type { Project, ProjectSettings as ProjectSettingsType, AutoBuildVersionInfo, ProjectEnvConfig, LinearSyncStatus, GitHubSyncStatus } from '../../../../shared/types';
 import { SettingsSection } from '../SettingsSection';
 import { GeneralSettings } from '../../project-settings/GeneralSettings';
+import { FrameworkSettings } from '../../project-settings/FrameworkSettings';
 import { EnvironmentSettings } from '../../project-settings/EnvironmentSettings';
 import { SecuritySettings } from '../../project-settings/SecuritySettings';
 import { LinearIntegration } from '../integrations/LinearIntegration';
@@ -95,6 +96,20 @@ export function SectionRouter({
             isUpdating={isUpdating}
             handleInitialize={handleInitialize}
             handleUpdate={handleUpdate}
+          />
+        </SettingsSection>
+      );
+
+    case 'framework':
+      return (
+        <SettingsSection
+          title="Planning Framework"
+          description="Choose how tasks are organized and displayed"
+        >
+          <FrameworkSettings
+            project={project}
+            settings={settings}
+            setSettings={setSettings}
           />
         </SettingsSection>
       );

@@ -3,6 +3,8 @@
  * Default settings, file paths, and project structure
  */
 
+import type { PlanningFramework } from '../types/project';
+
 // ============================================
 // Default App Settings
 // ============================================
@@ -49,8 +51,40 @@ export const DEFAULT_PROJECT_SETTINGS = {
   },
   // Graphiti MCP server for agent-accessible knowledge graph (enabled by default)
   graphitiMcpEnabled: true,
-  graphitiMcpUrl: 'http://localhost:8000/mcp/'
+  graphitiMcpUrl: 'http://localhost:8000/mcp/',
+  // Planning framework - defaults to BMAD (recommended for most projects)
+  framework: 'bmad' as const
 };
+
+// ============================================
+// Planning Framework Configuration
+// ============================================
+
+export interface FrameworkOption {
+  value: PlanningFramework;
+  label: string;
+  recommended: boolean;
+  description: string;
+}
+
+/**
+ * Available planning frameworks with their display information.
+ * Used by FrameworkSelector and settings components.
+ */
+export const FRAMEWORK_OPTIONS: FrameworkOption[] = [
+  {
+    value: 'bmad',
+    label: 'BMAD Method',
+    recommended: true,
+    description: 'Structured methodology with Epics, Stories, and sprint planning. Best for complex projects requiring detailed planning.',
+  },
+  {
+    value: 'native',
+    label: 'Auto Claude Native',
+    recommended: false,
+    description: 'Lightweight spec-based approach with Phases and Subtasks. Best for rapid prototyping and simpler projects.',
+  },
+];
 
 // ============================================
 // Auto Build File Paths

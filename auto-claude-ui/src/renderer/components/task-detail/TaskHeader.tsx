@@ -12,6 +12,10 @@ interface TaskHeaderProps {
   isIncomplete: boolean;
   taskProgress: { completed: number; total: number };
   isRunning: boolean;
+  /** Glossary term for the task type (e.g., "Story" or "Subtask") */
+  taskTerm?: string;
+  /** Glossary term for checkpoints (e.g., "Task" or "Subtask") */
+  checkpointTerm?: string;
   onClose: () => void;
   onEdit: () => void;
 }
@@ -22,12 +26,19 @@ export function TaskHeader({
   isIncomplete,
   taskProgress,
   isRunning,
+  taskTerm = 'Task',
+  checkpointTerm = 'subtask',
   onClose,
   onEdit
 }: TaskHeaderProps) {
+  const checkpointPlural = checkpointTerm.toLowerCase() + 's';
   return (
     <div className="flex items-start justify-between p-4 pb-3">
       <div className="flex-1 min-w-0 pr-2">
+        {/* Task type label with glossary term */}
+        <div className="text-[10px] text-muted-foreground mb-1">
+          {taskTerm} {task.specId}
+        </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <h2 className="font-semibold text-lg text-foreground line-clamp-2 leading-snug cursor-default">
@@ -56,7 +67,7 @@ export function TaskHeader({
                 Incomplete
               </Badge>
               <Badge variant="outline" className="text-xs text-orange-400">
-                {taskProgress.completed}/{taskProgress.total} subtasks
+                {taskProgress.completed}/{taskProgress.total} {checkpointPlural}
               </Badge>
             </>
           ) : (

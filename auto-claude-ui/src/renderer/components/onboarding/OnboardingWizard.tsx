@@ -11,6 +11,7 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { WizardProgress, WizardStep } from './WizardProgress';
 import { WelcomeStep } from './WelcomeStep';
+import { FrameworkStep } from './FrameworkStep';
 import { OAuthStep } from './OAuthStep';
 import { GraphitiStep } from './GraphitiStep';
 import { CompletionStep } from './CompletionStep';
@@ -24,11 +25,12 @@ interface OnboardingWizardProps {
 }
 
 // Wizard step identifiers
-type WizardStepId = 'welcome' | 'oauth' | 'graphiti' | 'completion';
+type WizardStepId = 'welcome' | 'framework' | 'oauth' | 'graphiti' | 'completion';
 
 // Step configuration
 const WIZARD_STEPS: { id: WizardStepId; label: string }[] = [
   { id: 'welcome', label: 'Welcome' },
+  { id: 'framework', label: 'Framework' },
   { id: 'oauth', label: 'Auth' },
   { id: 'graphiti', label: 'Memory' },
   { id: 'completion', label: 'Done' }
@@ -145,6 +147,14 @@ export function OnboardingWizard({
             onSkip={skipWizard}
           />
         );
+      case 'framework':
+        return (
+          <FrameworkStep
+            onNext={goToNextStep}
+            onBack={goToPreviousStep}
+            onSkip={skipWizard}
+          />
+        );
       case 'oauth':
         return (
           <OAuthStep
@@ -196,7 +206,7 @@ export function OnboardingWizard({
             Configure your Auto Claude environment in a few simple steps
           </FullScreenDialogDescription>
 
-          {/* Progress indicator - show for all steps except welcome and completion */}
+          {/* Progress indicator - show for intermediate steps */}
           {currentStepId !== 'welcome' && currentStepId !== 'completion' && (
             <div className="mt-6">
               <WizardProgress currentStep={currentStepIndex} steps={steps} />

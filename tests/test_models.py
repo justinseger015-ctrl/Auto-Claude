@@ -259,3 +259,37 @@ class TestImports:
         )
         # If we get here without ImportError, test passes
         assert True
+
+
+class TestStatusMappingEdgeCases:
+    """Tests for status mapping edge cases - added in code review."""
+
+    def test_bmad_optional_status_maps_to_pending(self):
+        """BMAD 'optional' (retrospective status) maps to PENDING."""
+        assert map_bmad_status("optional") == UnifiedStatus.PENDING
+
+    def test_bmad_empty_string_raises(self):
+        """Empty string raises ValueError for BMAD status."""
+        with pytest.raises(ValueError, match="Unknown BMAD status"):
+            map_bmad_status("")
+
+    def test_native_empty_string_raises(self):
+        """Empty string raises ValueError for Native status."""
+        with pytest.raises(ValueError, match="Unknown Native status"):
+            map_native_status("")
+
+    def test_bmad_status_case_sensitive(self):
+        """BMAD status mapping is case-sensitive."""
+        # Uppercase should fail
+        with pytest.raises(ValueError, match="Unknown BMAD status"):
+            map_bmad_status("Backlog")
+        with pytest.raises(ValueError, match="Unknown BMAD status"):
+            map_bmad_status("DONE")
+
+    def test_native_status_case_sensitive(self):
+        """Native status mapping is case-sensitive."""
+        # Uppercase should fail
+        with pytest.raises(ValueError, match="Unknown Native status"):
+            map_native_status("Pending")
+        with pytest.raises(ValueError, match="Unknown Native status"):
+            map_native_status("IN_PROGRESS")

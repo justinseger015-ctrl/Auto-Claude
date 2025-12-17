@@ -26,3 +26,6 @@ export * from './github';
 
 // Configuration and paths
 export * from './config';
+
+// Status colors for UnifiedStatus
+export * from './status-colors';

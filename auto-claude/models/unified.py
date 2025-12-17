@@ -123,6 +123,7 @@ BMAD_STATUS_MAP: dict[str, UnifiedStatus] = {
     "review": UnifiedStatus.REVIEW,
     "blocked": UnifiedStatus.BLOCKED,
     "done": UnifiedStatus.COMPLETED,
+    "optional": UnifiedStatus.PENDING,  # For retrospective status
 }
 
 NATIVE_STATUS_MAP: dict[str, UnifiedStatus] = {

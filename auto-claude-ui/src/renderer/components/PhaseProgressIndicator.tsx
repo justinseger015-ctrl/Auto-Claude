@@ -9,6 +9,7 @@ interface PhaseProgressIndicatorProps {
   isStuck?: boolean;
   isRunning?: boolean;
   className?: string;
+  checkpointTerm?: string;  // Glossary term for subtasks (e.g., "Task" or "Verification")
 }
 
 // Phase display configuration
@@ -35,6 +36,7 @@ export function PhaseProgressIndicator({
   isStuck = false,
   isRunning = false,
   className,
+  checkpointTerm = 'Subtask',  // Default to "Subtask" for backwards compatibility
 }: PhaseProgressIndicatorProps) {
   // Calculate subtask-based progress (for coding phase)
   const completedSubtasks = subtasks.filter((c) => c.status === 'completed').length;
@@ -157,7 +159,7 @@ export function PhaseProgressIndicator({
             <motion.div
               key={subtask.id || `subtask-${index}`}
               className={cn(
-                'h-2 w-2 rounded-full',
+                'h-2 w-2 rounded-full subtask-dot-transition',
                 subtask.status === 'completed' && 'bg-success',
                 subtask.status === 'in_progress' && 'bg-info',
                 subtask.status === 'failed' && 'bg-destructive',
@@ -181,7 +183,7 @@ export function PhaseProgressIndicator({
                   ? { duration: 1, repeat: Infinity, ease: 'easeOut' }
                   : undefined,
               }}
-              title={`${subtask.title || subtask.id}: ${subtask.status}`}
+              title={`${checkpointTerm} ${subtask.title || subtask.id}: ${subtask.status}`}
             />
           ))}
           {totalSubtasks > 10 && (

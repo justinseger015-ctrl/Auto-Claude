@@ -14,6 +14,8 @@ export { GitHubIntegrationSection } from './GitHubIntegrationSection';
 export { MemoryBackendSection } from './MemoryBackendSection';
 export { AgentConfigSection } from './AgentConfigSection';
 export { NotificationsSection } from './NotificationsSection';
+export { FrameworkSettings } from './FrameworkSettings';
+export { FrameworkChangeDialog } from './FrameworkChangeDialog';
 
 // Utility components
 export { CollapsibleSection } from './CollapsibleSection';
